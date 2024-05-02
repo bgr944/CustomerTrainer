@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
@@ -17,10 +17,34 @@ export default function CustomerList() {
     { headerName: 'Phone', field: 'phone', sortable: true, filter: true }
   ]);
 
+  const gridRef = useRef();
+
     useEffect(() => {
         fetchCustomers();
     }, []);
 
+    const handleDelete = () => {
+      const selectedNode = gridRef.current.getSelectedNodes()[0];
+      if (selectedNode) {
+        const customerId = selectedNode.data.id;
+        fetch(`https://customerrestservice-personaltraining.rahtiapp.fi/api/customers/${customerId}`, {
+          method: 'DELETE',
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Failed to delete customer');
+            }
+            setCustomers(customers.filter(customer => customer.id !== customerId));
+          })
+          .catch(error => {
+            console.error('Error deleting customer:', error.message);
+          });
+      } else {
+        alert('Select a row first!');
+      }
+    };
+    
+  
     const fetchCustomers = () => {
       fetch('https://customerrestservice-personaltraining.rahtiapp.fi/getcustomers')
         .then(response => {
@@ -60,14 +84,17 @@ export default function CustomerList() {
     <div>
       <div className="ag-theme-material" style={{width: 1200, height: 500}}>
         <AgGridReact
+          ref={gridRef}
+          onGridReady={ params => gridRef.current = params.api }
           columnDefs={columnDefs}
           rowData={customers}
           pagination={true}
           paginationPageSize={10}
-          rowSelection="multiple"
+          rowSelection="single"
         />
       </div>
       <AddCustomer NewCustomer={handleAddCustomer} />
+      <button onClick={handleDelete}>Delete</button>
     </div>
   );
 }
