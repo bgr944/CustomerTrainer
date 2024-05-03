@@ -27,22 +27,29 @@ export default function CustomerList() {
       const selectedNode = gridRef.current.getSelectedNodes()[0];
       if (selectedNode) {
         const customerId = selectedNode.data.id;
-        fetch(`https://customerrestservice-personaltraining.rahtiapp.fi/api/customers/${customerId}`, {
-          method: 'DELETE',
-        })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Failed to delete customer');
-            }
-            setCustomers(customers.filter(customer => customer.id !== customerId));
+        
+        // Ask for confirmation
+        const isConfirmed = window.confirm(`Are you sure you want to delete customer with ID ${customerId}?`);
+        
+        if (isConfirmed) {
+          fetch(`https://customerrestservice-personaltraining.rahtiapp.fi/api/customers/${customerId}`, {
+            method: 'DELETE',
           })
-          .catch(error => {
-            console.error('Error deleting customer:', error.message);
-          });
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Failed to delete customer');
+              }
+              setCustomers(customers.filter(customer => customer.id !== customerId));
+            })
+            .catch(error => {
+              console.error('Error deleting customer:', error.message);
+            });
+        }
       } else {
         alert('Select a row first!');
       }
     };
+    
     
   
     const fetchCustomers = () => {
