@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function AddCustomer ({ NewCustomer }) {
+export default function AddCustomer({ NewCustomer, fetchCustomers }) {
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -27,6 +27,9 @@ export default function AddCustomer ({ NewCustomer }) {
     }
 
     NewCustomer(formData);
+    
+    // Fetch updated customer list after adding new customer
+    fetchCustomers();
 
     setFormData({
       firstname: '',

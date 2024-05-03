@@ -100,7 +100,7 @@ export default function CustomerList() {
           rowSelection="single"
         />
       </div>
-      <AddCustomer NewCustomer={handleAddCustomer} />
+      <AddCustomer NewCustomer={handleAddCustomer} fetchCustomers={fetchCustomers} />
       <button onClick={handleDelete}>Delete</button>
     </div>
   );
