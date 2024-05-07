@@ -3,6 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
 import AddCustomer from './AddCustomer';
+import AddTraining from './AddTraining';
 
 export default function CustomerList() {
   const [customers, setCustomers] = useState([]);
@@ -102,6 +103,8 @@ export default function CustomerList() {
       </div>
       <AddCustomer NewCustomer={handleAddCustomer} fetchCustomers={fetchCustomers} />
       <button onClick={handleDelete}>Delete</button>
+      <h2>Add Training</h2>
+      <AddTraining gridRef={gridRef}/>
     </div>
   );
 }
